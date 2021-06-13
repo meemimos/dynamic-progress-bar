@@ -52,3 +52,19 @@
 .progress-bar-active-red {
   box-shadow: 2px 2px 12px #bd2130;
 }
+
+
+.list-button {
+  display: contents;
+  list-style-type: none;
+}
+
+.list-button li:first-child {
+  margin-left: 0px!important;
+}
+
+.custom-card {
+  margin: 50px;
+  padding: 40px;
+  box-shadow: 12px 12px 20px #007bff;
+}
