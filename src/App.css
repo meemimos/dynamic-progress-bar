@@ -36,3 +36,19 @@
     transform: rotate(360deg);
   }
 }
+
+.progress {
+  height: 1.5rem;
+}
+
+.progress-bar-active {
+  box-shadow: 2px 2px 12px rgb(96 151 220 / 96%);
+}
+
+.progress-bar-deactive{
+  box-shadow: none!important;
+}
+
+.progress-bar-active-red {
+  box-shadow: 2px 2px 12px #bd2130;
+}
