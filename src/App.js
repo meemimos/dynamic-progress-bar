@@ -13,11 +13,21 @@ function App() {
   const [limit, setLimit] = useState();
   const [currentBar, setCurrentBar] = useState();
 
+  //Using Effect to track data update
+
+  //This effect will fetch all the data from endpoint
   useEffect(() => {
-    console.log('Generate Progress Bar.');
+    console.log('Getting Data from endpoint');
     getProgressBarData();
   }, []);
 
+  //This effect will be triggred when any bar value gets value update
+  useEffect(() => {
+    console.log("Info: " + (currentBar ? currentBar.name : "Progress Bar") + " value updated!")
+  }, [bars, currentBar])
+
+
+  //Async Function to get all the data from endpoint provided
   const getProgressBarData = async () => {
     const apiUrl = "http://pb-api.herokuapp.com/bars";
     await axios.get(apiUrl)
@@ -25,6 +35,7 @@ function App() {
         const bars = [];
         const buttons = [];
         console.log(response.data);
+        // eslint-disable-next-line array-callback-return
         response.data.bars.map((percent, i) => {
           bars.push(
             {
@@ -35,6 +46,7 @@ function App() {
             }
           )
         })
+        // eslint-disable-next-line array-callback-return
         response.data.buttons.map((value, i) => {
           buttons.push(
             {
@@ -57,8 +69,57 @@ function App() {
       });
   }
 
-  const handleButton = () => {
-    console.log('button clicked')
+  //Function to create dynamic dropdown option
+  const makeDropDownOption = () => {
+    return bars.map((option) =>
+      <option key={option.key} value={option.value}>
+        {option.name}
+      </option>
+    );
+  }
+
+  //Function to update current Bar when user select from dropdown option
+  const handleChange = (e) => {
+    const key = e.target.selectedIndex;
+    var currentBar = {};
+    let newBars = Object.assign([], bars);
+    newBars.map((bar) => {
+      if (bar.key === key) {
+        bar.active = true
+        currentBar = {
+          key: bar.key,
+          name: bar.name,
+          percent: bar.percent,
+          active: true
+        }
+      } else {
+        bar.active = false
+      }
+    });
+    setCurrentBar(currentBar);
+    setBars(newBars);
+  }
+
+  //Function to handle Increment/Decrement button clicked
+  const handleButton = (e) => {
+    let newBars = Object.assign([], bars)
+
+    const oldValue = parseInt(currentBar.percent);
+    var newValue = parseInt(e.target.innerHTML);
+
+    newValue = oldValue + newValue;
+
+    if (newValue <= 0) {
+      newValue = 0
+    } else if (newValue >= limit) {
+      newValue = limit
+    }
+
+    currentBar.percent = newValue;
+    newBars[currentBar.key].percent = newValue;
+    setCurrentBar(currentBar);
+    setBars(newBars);
+    console.log(currentBar);
   }
 
   return (
@@ -70,6 +131,12 @@ function App() {
         :
         <div className="page-header">
           <h1>Progress Bar <small>Demo</small></h1>
+
+          {/* Dropdown Option */}
+          <select id="select-dropdown" className="form-select" onChange={handleChange}>
+            {makeDropDownOption()}
+          </select>
+
           {/* Progress Bar */}
           <div>
             {bars.map((bar) => {
