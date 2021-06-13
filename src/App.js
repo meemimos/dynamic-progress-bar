@@ -111,8 +111,6 @@ function App() {
 
     if (newValue <= 0) {
       newValue = 0
-    } else if (newValue >= limit) {
-      newValue = limit
     }
 
     currentBar.percent = newValue;
@@ -143,11 +141,11 @@ function App() {
               return <ProgressBar key={bar.key}
                 className={
                   `mt-4 ${bar.active ? "progress-bar-active" : "progress-bar-deactive"}
-                   ${bar.percent > 100 ? "progress-bar-active-red" : ""}
+                   ${bar.percent >= limit ? "progress-bar-active-red" : ""}
                  `}
                 striped
-                variant={bar.percent > 100 ? "danger" : "primary"}
-                now={bar.percent < 0 ? 0 : bar.percent}
+                variant={bar.percent >= limit ? "danger" : "primary"}
+                now={bar.percent < 0 ? 0 : (bar.percent * 100) / limit}
                 label={`${bar.percent < 0 ? 0 : bar.percent}%`} />
             })}
           </div>
